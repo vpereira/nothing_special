@@ -1,0 +1,23 @@
+
+version: '3'
+
+services:
+  web:
+    image: opensuse/tumbleweed
+    ports:
+      - 31337:31337
+    volumes:
+      - .:/web
+    command: /web/ex2
+
+  prometheus:
+    image: prom/prometheus:v2.21.0
+    ports:
+      - 9000:9090
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus-data:/prometheus
+    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
+
+volumes:
+  prometheus-data:
