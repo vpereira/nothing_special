@@ -1,8 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"net/http"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -18,26 +16,6 @@ func fakeMetric() {
 
 func recordMetrics() {
 	go fakeMetric()
-}
-
-func fooHandler(w http.ResponseWriter, r *http.Request) {
-	foo := Foo{"Bar"}
-	js, err := json.Marshal(foo)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-	w.Header().Set("Content-type", "application/json")
-	w.Write(js)
-}
-
-func barHandler(w http.ResponseWriter, r *http.Request) {
-	bar := Bar{"Foo", []string{"street a", "street b"}}
-	js, err := json.Marshal(bar)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-	w.Header().Set("Content-type", "application/json")
-	w.Write(js)
 }
 
 var (
