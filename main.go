@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -59,9 +60,12 @@ var (
 func main() {
 	recordMetrics()
 
-	http.Handle("/metrics", promhttp.Handler())
-	http.HandleFunc("/foo", fooHandler)
-	http.HandleFunc("/bar", barHandler)
+	r := mux.NewRouter()
 
-	http.ListenAndServe(":31337", nil)
+	r.Path("/metrics").Handler(promhttp.Handler())
+	r.Path("/foo").HandlerFunc(fooHandler)
+	r.Path("/bar").HandlerFunc(barHandler)
+
+	srv := &http.Server{Addr: ":31337", Handler: r}
+	srv.ListenAndServe()
 }
