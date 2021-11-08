@@ -5,20 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
-
-type Foo struct {
-	Name string
-}
-
-type Bar struct {
-	Name      string
-	Addresses []string
-}
 
 func fakeMetric() {
 	for {
@@ -26,6 +15,7 @@ func fakeMetric() {
 		time.Sleep(2 * time.Second)
 	}
 }
+
 func recordMetrics() {
 	go fakeMetric()
 }
@@ -60,12 +50,7 @@ var (
 func main() {
 	recordMetrics()
 
-	r := mux.NewRouter()
-
-	r.Path("/metrics").Handler(promhttp.Handler())
-	r.Path("/foo").HandlerFunc(fooHandler)
-	r.Path("/bar").HandlerFunc(barHandler)
-
-	srv := &http.Server{Addr: ":31337", Handler: r}
-	srv.ListenAndServe()
+	a := App{}
+	a.Initialize()
+	a.Run(":31337")
 }
